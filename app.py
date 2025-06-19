@@ -19,11 +19,6 @@ app.logger.debug('Modelo cargado correctamente.')
 def insectos():
     return render_template('insectos.html')
 
-@app.route('/iris')
-def home():
-    return render_template('iris.html')
-
-
 
 @app.route('/predict-insecto', methods=['POST'])
 def predict():
