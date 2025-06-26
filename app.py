@@ -5,44 +5,43 @@ import logging
 
 app = Flask(__name__)
 
-
-# Configurar el registro
+# Logging
 logging.basicConfig(level=logging.DEBUG)
 
-# Cargar el modelo entrenado
-model = joblib.load('model.pkl')
-# model = joblib.load('modelo_svc.joblib')
+# Cargar modelo
+model = joblib.load('wolmar.pkl')  # Asegúrate de usar el modelo correcto
 app.logger.debug('Modelo cargado correctamente.')
 
-
 @app.route('/')
-def insectos():
-    return render_template('insectos.html')
+def home():
+    return render_template('Wolmar.html')
 
-
-@app.route('/predict-insecto', methods=['POST'])
-def predict():
+@app.route('/predict-ventas', methods=['POST'])
+def predict_ventas():
     try:
-        # Obtener los datos enviados en el request
-        abdomen = float(request.form['abdomen'])
-        antena = float(request.form['antena'])
-        
-        # Crear un DataFrame con los datos
-        data_df = pd.DataFrame([[abdomen, antena]], columns=['abdomen', 'antena'])
-        app.logger.debug(f'DataFrame creado: {data_df}')
-        
-        # Realizar predicciones
-        prediction = model.predict(data_df)
-        app.logger.debug(f'Predicción: {prediction[0]}')
-        
-        # Devolver las predicciones como respuesta JSON
-        return jsonify({'categoria': prediction[0]})
+        # Extraer variables
+        datos = {
+            'Store': int(request.form['Store']),
+            'CPI': float(request.form['CPI']),
+            'Unemployment': float(request.form['Unemployment']),
+            'Week': int(request.form['Week']),
+            'Temperature': float(request.form['Temperature']),
+            'Fuel_Price': float(request.form['Fuel_Price'])
+        }
+
+        # Crear DataFrame
+        df = pd.DataFrame([datos])
+        app.logger.debug(f'Datos recibidos: {df}')
+
+        # Predecir
+        prediccion = model.predict(df)[0]
+        app.logger.debug(f'Predicción: {prediccion}')
+
+        return jsonify({'prediccion': float(prediccion)})
+
     except Exception as e:
-        app.logger.error(f'Error en la predicción: {str(e)}')
+        app.logger.error(f'Error en la predicción: {e}')
         return jsonify({'error': str(e)}), 400
 
-
-# esto siempre va al final
 if __name__ == '__main__':
     app.run(debug=True)
-
