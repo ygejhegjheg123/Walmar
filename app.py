@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, jsonify
-import joblib
+import cloudpickle
 import pandas as pd
 import logging
 
@@ -8,8 +8,9 @@ app = Flask(__name__)
 # Logging
 logging.basicConfig(level=logging.DEBUG)
 
-# Cargar modelo
-model = joblib.load('wolmar.pkl')  # Asegúrate de usar el modelo correcto
+# ✅ Cargar modelo usando cloudpickle
+with open('wolmar.pkl', 'rb') as f:
+    model = cloudpickle.load(f)
 app.logger.debug('Modelo cargado correctamente.')
 
 @app.route('/')
@@ -19,7 +20,7 @@ def home():
 @app.route('/predict-ventas', methods=['POST'])
 def predict_ventas():
     try:
-        # Extraer variables
+        # Extraer variables del formulario
         datos = {
             'Store': int(request.form['Store']),
             'CPI': float(request.form['CPI']),
@@ -29,11 +30,11 @@ def predict_ventas():
             'Fuel_Price': float(request.form['Fuel_Price'])
         }
 
-        # Crear DataFrame
+        # Crear DataFrame con una sola fila
         df = pd.DataFrame([datos])
         app.logger.debug(f'Datos recibidos: {df}')
 
-        # Predecir
+        # Realizar predicción
         prediccion = model.predict(df)[0]
         app.logger.debug(f'Predicción: {prediccion}')
 
