@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, jsonify
-import cloudpickle
+import joblib
 import pandas as pd
 import logging
 
@@ -8,9 +8,9 @@ app = Flask(__name__)
 # Logging
 logging.basicConfig(level=logging.DEBUG)
 
-# ✅ Cargar modelo usando cloudpickle
+# ✅ Cargar modelo usando joblib
 with open('wolmar.pkl', 'rb') as f:
-    model = cloudpickle.load(f)
+    model = joblib.load(f)
 app.logger.debug('Modelo cargado correctamente.')
 
 @app.route('/')

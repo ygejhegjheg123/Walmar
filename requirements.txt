@@ -1,7 +1,7 @@
 blinker==1.8.2
 click==8.1.7
 colorama==0.4.6
-Flask==3.0.3
+Flask==2.2.2       # o Flask==2.1.2 si prefieres una versión más estable
 gunicorn==22.0.0
 itsdangerous==2.2.0
 Jinja2==3.1.4
@@ -18,5 +18,4 @@ scipy==1.13.1
 six==1.16.0
 threadpoolctl==3.5.0
 tzdata==2024.1
-Werkzeug==3.0.3
-cloudpickle==3.0.0
+Werkzeug==3.0.3   # Si estás usando Flask 3, mantén esta versión
